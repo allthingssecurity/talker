@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 from src.gradio_demo import SadTalker
 from huggingface_hub import snapshot_download
+from upload import upload_to_do
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -34,8 +35,9 @@ def upload_file():
             return 'No selected file', 400
 
         source_image_filename = secure_filename(source_image.filename)
+        print(f"source file={source_image_filename}")
         audio_path_filename = secure_filename(audio_path.filename)
-
+        print(f"audio file={audio_path_filename}")
         source_image_path = os.path.join(app.config['UPLOAD_FOLDER'], source_image_filename)
         audio_path_file = os.path.join(app.config['UPLOAD_FOLDER'], audio_path_filename)
 
@@ -49,12 +51,13 @@ def upload_file():
             ref_video_path.save(ref_video_file)
 
         # Process the files
+        print("before calling video gen")
         generated_video_path = process_files(source_image_path, audio_path_file, ref_video_file)
+        print("after  video gen")
+        upload_to_do(generated_video_path)
         
-        return render_template('display_video.html', video_file=generated_video_path)
-    
-    return render_template('upload_form.html')
-
+        print("uploaded to Digital Ocean space")
+        
 def process_files(source_image_path, audio_path, ref_video_path=None):
     sad_talker = SadTalker(lazy_load=True)
 
@@ -74,11 +77,12 @@ def process_files(source_image_path, audio_path, ref_video_path=None):
         'result_dir': app.config['RESULT_FOLDER'],
     }
 
-    generated_video_path = sad_talker.generate(source_image_path=source_image_path,
+    generated_video_path = sad_talker.test(source_image=source_image_path,
                                                driven_audio=audio_path,
                                                ref_video=ref_video_path,
                                                **params)
-
+    
+    
     return generated_video_path
 
 @app.route('/results/<filename>')
@@ -86,4 +90,4 @@ def result(filename):
     return send_from_directory(app.config['RESULT_FOLDER'], filename)
 
 if __name__ == "__main__":
-    app.run(debug=True,host=0.0.0.0,port=7860)
+    app.run(debug=True,host=0.0.0.0,port=5000)
