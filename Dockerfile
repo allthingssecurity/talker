@@ -56,4 +56,4 @@ ENV PYTHONPATH=${HOME}/app \
     GRADIO_SERVER_NAME=0.0.0.0 \
     GRADIO_THEME=huggingface \
     SYSTEM=spaces
-CMD ["python", "app.py"]
+CMD ["python", "mytalker.py"]
