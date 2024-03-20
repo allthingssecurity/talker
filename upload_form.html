@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Files</title>
+</head>
+<body>
+<h2>Upload Image and Audio for Talking Face Generation</h2>
+<form action="" method="post" enctype="multipart/form-data">
+    <label for="source_image">Image (required):</label>
+    <input type="file" id="source_image" name="source_image" accept="image/*" required><br><br>
+    <label for="audio_path">Audio (required):</label>
+    <input type="file" id="audio_path" name="audio_path" accept="audio/*" required><br><br>
+    <label for="ref_video_path">Reference Video (optional):</label>
+    <input type="file" id="ref_video_path" name="ref_video_path" accept="video/*"><br><br>
+    <input type="submit" value="Generate">
+</form>
+</body>
+</html>
