@@ -17,7 +17,7 @@ if not os.path.exists(app.config['RESULT_FOLDER']):
 
 def download_model():
     REPO_ID = 'vinthony/SadTalker-V002rc'
-    snapshot_download(repo_id=REPO_ID, local_dir='./checkpoints', use_auth_token=True)
+    snapshot_download(repo_id=REPO_ID, local_dir='./checkpoints', local_dir_use_symlinks=True)
 
 download_model()  # Download model once when server starts
 
