@@ -218,6 +218,6 @@ if __name__ == "__main__":
 
     demo = sadtalker_demo()
     demo.queue(max_size=10)
-    demo.launch(debug=True)
+    demo.launch(debug=True,share=True)
 
 
