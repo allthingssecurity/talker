@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Image and Audio</title>
+</head>
+<body>
+
+<h2>Generate Talking Face Animation</h2>
+<form id="uploadForm" action="/generate" method="post" enctype="multipart/form-data">
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image" accept="image/*"><br><br>
+    <label for="audio">Audio:</label>
+    <input type="file" id="audio" name="audio" accept="audio/*"><br><br>
+    <label for="ref_video">Reference Video (Optional):</label>
+    <input type="file" id="ref_video" name="ref_video" accept="video/*"><br><br>
+    <input type="submit" value="Generate">
+</form>
+
+<video id="resultVideo" controls style="display:none; width: 100%; margin-top: 20px;"></video>
+
+<script>
+document.getElementById('uploadForm').onsubmit = function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    var formData = new FormData(this);
+
+    fetch('/generate', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json()) // Assuming the server responds with JSON containing the video URL
+    .then(data => {
+        var video = document.getElementById('resultVideo');
+        video.src = data.videoUrl; // Assuming the JSON response has a videoUrl field
+        video.style.display = 'block'; // Make the video element visible
+    })
+    .catch(error => console.error('Error:', error));
+};
+</script>
+
+</body>
+</html>
