@@ -55,7 +55,7 @@ RUN pip install --no-cache-dir -U -r /tmp/requirements.txt
 COPY --chown=1000 . ${HOME}/app
 RUN ls -a
 
-ENV FLASK_APP=trainendpoint.py
+ENV FLASK_APP=mytalker.py
 
 # Expose the port Flask is running on
 EXPOSE 5000
