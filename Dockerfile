@@ -32,8 +32,8 @@ RUN useradd -m -u 1000 user
 
 # Create the directories before switching to user to ensure permissions are set correctly
 USER root
-RUN mkdir -p /home/user/app/uploads /home/user/app/results && \
-    chown -R user:user /home/user/app/uploads /home/user/app/results
+RUN mkdir -p /home/user/app/uploads /home/user/app/results /home/user/app/checkpoints && \
+    chown -R user:user /home/user/app/uploads /home/user/app/results /home/user/app/checkpoints
 
 USER user
 ENV HOME=/home/user \
