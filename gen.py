@@ -14,33 +14,35 @@ def main(source_image_path, audio_path, ref_video_path=None):
 
     # Hardcoded parameters as they are in Gradio UI
     params = {
-        'preprocess_type': 'crop',
-        'is_still_mode': True,
-        'enhancer': False,
+        'preprocess': 'crop',
+        'still_mode': True,
+        'use_enhancer': False,
         'batch_size': 1,
-        'size_of_image': 256,
+        'size': 256,
         'pose_style': 0,
         'facerender': 'facevid2vid',
-        'exp_weight': 1.0,
+        'exp_scale': 1.0,
         'use_ref_video': ref_video_path is not None,
         'ref_info': 'pose',
         'use_idle_mode': False,
         'length_of_audio': 5,
-        'blink_every': True,
+        result_dir='./results/',
     }
-
+    
+    
+    
     # Assuming SadTalker has a method `generate` to process these inputs
     # Adapt this part according to your actual implementation
     generated_video_path = sad_talker.generate(source_image_path=source_image_path,
-                                               audio_path=audio_path,
-                                               ref_video_path=ref_video_path,
+                                               driven_audio=audio_path,
+                                               ref_video=ref_video_path,
                                                **params)
 
     print(f"Generated video saved to: {generated_video_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate talking face animation")
-    parser.add_argument("source_image_path", type=str, help="Path to the source image")
+    parser.add_argument("source_image", type=str, help="Path to the source image")
     parser.add_argument("audio_path", type=str, help="Path to the input audio")
     parser.add_argument("--ref_video_path", type=str, default=None, help="Optional path to the reference video")
 
