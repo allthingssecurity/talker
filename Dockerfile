@@ -1,5 +1,6 @@
 FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
@@ -9,10 +10,8 @@ RUN apt-get update && \
     git-lfs \
     wget \
     curl \
-    # ffmpeg \
     ffmpeg \
     x264 \
-    # python build dependencies \
     build-essential \
     libssl-dev \
     zlib1g-dev \
@@ -30,6 +29,12 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -u 1000 user
+
+# Create the directories before switching to user to ensure permissions are set correctly
+USER root
+RUN mkdir -p /home/user/app/uploads /home/user/app/results && \
+    chown -R user:user /home/user/app/uploads /home/user/app/results
+
 USER user
 ENV HOME=/home/user \
     PATH=/home/user/.local/bin:${PATH}
