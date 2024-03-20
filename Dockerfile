@@ -54,6 +54,15 @@ RUN pip install --no-cache-dir -U -r /tmp/requirements.txt
 
 COPY --chown=1000 . ${HOME}/app
 RUN ls -a
+
+ENV FLASK_APP=trainendpoint.py
+
+# Expose the port Flask is running on
+EXPOSE 5000
+
+# Command to run the Flask application
+
+
 ENV PYTHONPATH=${HOME}/app \
     PYTHONUNBUFFERED=1 \
     GRADIO_ALLOW_FLAGGING=never \
@@ -61,4 +70,4 @@ ENV PYTHONPATH=${HOME}/app \
     GRADIO_SERVER_NAME=0.0.0.0 \
     GRADIO_THEME=huggingface \
     SYSTEM=spaces
-CMD ["python", "mytalker.py"]
+CMD ["flask", "run", "--host=0.0.0.0"]
