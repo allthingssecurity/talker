@@ -55,13 +55,35 @@ def upload_file():
             print("before calling video gen")
             generated_video_path = process_files(source_image_path, audio_path_file, ref_video_file)
             print("after video gen")
-            upload_to_do(generated_video_path)
+            renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
+            upload_to_do(renamed_video_path)
             
             print("uploaded to Digital Ocean space")
             return jsonify(message="Files processed and uploaded successfully"), 200
     except Exception as e:
         print(f"An error occurred: {e}")
         return jsonify(error=str(e)), 500
+
+
+def rename_video_to_audio_filename(generated_video_path, audio_path):
+    # Extract just the filenames
+    video_filename = os.path.basename(generated_video_path)
+    audio_filename = os.path.basename(audio_path)
+
+    # Get the file extension of the video file
+    video_extension = os.path.splitext(video_filename)[1]
+
+    # Construct the new video filename using the audio filename (but keep its original extension)
+    new_video_filename = os.path.splitext(audio_filename)[0] + video_extension
+
+    # Construct the full new path for the video if necessary
+    # Here we assume the video is in the same directory as the generated_video_path
+    new_video_path = os.path.join(os.path.dirname(generated_video_path), new_video_filename)
+
+    # Rename the video file
+    os.rename(generated_video_path, new_video_path)
+
+    return new_video_path
         
 def process_files(source_image_path, audio_path, ref_video_path=None):
     sad_talker = SadTalker(lazy_load=True)
