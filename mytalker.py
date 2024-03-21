@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['RESULT_FOLDER'] = 'results'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
-
+video_generation_in_progress = False
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 if not os.path.exists(app.config['RESULT_FOLDER']):
@@ -20,9 +20,10 @@ def download_model():
     snapshot_download(repo_id=REPO_ID, local_dir='./checkpoints', local_dir_use_symlinks=True)
 
 download_model()  # Download model once when server starts
-video_generation_in_progress = False
+
 @app.route('/generate_video', methods=['POST'])
 def generate_video():
+    global video_generation_in_progress
     try:
         if video_generation_in_progress:
             return jsonify(message="Video generation is already in progress. Please try again later."), 429
