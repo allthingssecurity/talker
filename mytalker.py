@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, request, render_template, send_from_directory,jsonify
 from werkzeug.utils import secure_filename
 import os
 from src.gradio_demo import SadTalker
@@ -23,41 +23,45 @@ download_model()  # Download model once when server starts
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'POST':
-        # Check if the post request has the file parts
-        if 'source_image' not in request.files or 'audio_path' not in request.files:
-            return 'Missing files', 400
-        source_image = request.files['source_image']
-        audio_path = request.files['audio_path']
-        ref_video_path = request.files.get('ref_video_path')  # Optional
+    try:
+        if request.method == 'POST':
+            # Check if the post request has the file parts
+            if 'source_image' not in request.files or 'audio_path' not in request.files:
+                return 'Missing files', 400
+            source_image = request.files['source_image']
+            audio_path = request.files['audio_path']
+            ref_video_path = request.files.get('ref_video_path')  # Optional
 
-        if source_image.filename == '' or audio_path.filename == '':
-            return 'No selected file', 400
+            if source_image.filename == '' or audio_path.filename == '':
+                return 'No selected file', 400
 
-        source_image_filename = secure_filename(source_image.filename)
-        print(f"source file={source_image_filename}")
-        audio_path_filename = secure_filename(audio_path.filename)
-        print(f"audio file={audio_path_filename}")
-        source_image_path = os.path.join(app.config['UPLOAD_FOLDER'], source_image_filename)
-        audio_path_file = os.path.join(app.config['UPLOAD_FOLDER'], audio_path_filename)
+            source_image_filename = secure_filename(source_image.filename)
+            print(f"source file={source_image_filename}")
+            audio_path_filename = secure_filename(audio_path.filename)
+            print(f"audio file={audio_path_filename}")
+            source_image_path = os.path.join(app.config['UPLOAD_FOLDER'], source_image_filename)
+            audio_path_file = os.path.join(app.config['UPLOAD_FOLDER'], audio_path_filename)
 
-        source_image.save(source_image_path)
-        audio_path.save(audio_path_file)
+            source_image.save(source_image_path)
+            audio_path.save(audio_path_file)
 
-        ref_video_file = None
-        if ref_video_path and ref_video_path.filename != '':
-            ref_video_filename = secure_filename(ref_video_path.filename)
-            ref_video_file = os.path.join(app.config['UPLOAD_FOLDER'], ref_video_filename)
-            ref_video_path.save(ref_video_file)
+            ref_video_file = None
+            if ref_video_path and ref_video_path.filename != '':
+                ref_video_filename = secure_filename(ref_video_path.filename)
+                ref_video_file = os.path.join(app.config['UPLOAD_FOLDER'], ref_video_filename)
+                ref_video_path.save(ref_video_file)
 
-        # Process the files
-        print("before calling video gen")
-        generated_video_path = process_files(source_image_path, audio_path_file, ref_video_file)
-        print("after  video gen")
-        upload_to_do(generated_video_path)
-        
-        print("uploaded to Digital Ocean space")
-        
+            # Process the files
+            print("before calling video gen")
+            generated_video_path = process_files(source_image_path, audio_path_file, ref_video_file)
+            print("after video gen")
+            upload_to_do(generated_video_path)
+            
+            print("uploaded to Digital Ocean space")
+            return jsonify(message="Files processed and uploaded successfully"), 200
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return jsonify(error=str(e)), 500*        
 def process_files(source_image_path, audio_path, ref_video_path=None):
     sad_talker = SadTalker(lazy_load=True)
 
