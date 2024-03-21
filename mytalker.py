@@ -20,10 +20,13 @@ def download_model():
     snapshot_download(repo_id=REPO_ID, local_dir='./checkpoints', local_dir_use_symlinks=True)
 
 download_model()  # Download model once when server starts
-
+video_generation_in_progress = False
 @app.route('/generate_video', methods=['POST'])
 def generate_video():
     try:
+        if video_generation_in_progress:
+            return jsonify(message="Video generation is already in progress. Please try again later."), 429
+
         if request.method == 'POST':
             # Check if the post request has the file parts
             if 'source_image' not in request.files or 'audio_path' not in request.files:
@@ -59,6 +62,7 @@ def generate_video():
             upload_to_do(generated_video_path)
             
             print("uploaded to Digital Ocean space")
+            video_generation_in_progress = False
             return jsonify(message="Files processed and uploaded successfully"), 200
     except Exception as e:
         print(f"An error occurred: str{e}")
