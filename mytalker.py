@@ -21,8 +21,8 @@ def download_model():
 
 download_model()  # Download model once when server starts
 
-@app.route('/', methods=['GET', 'POST'])
-def upload_file():
+@app.route('/generate_video', methods=['POST'])
+def generate_video():
     try:
         if request.method == 'POST':
             # Check if the post request has the file parts
@@ -55,13 +55,13 @@ def upload_file():
             print("before calling video gen")
             generated_video_path = process_files(source_image_path, audio_path_file, ref_video_file)
             print("after video gen")
-            renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
+            #renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
             upload_to_do(renamed_video_path)
             
             print("uploaded to Digital Ocean space")
             return jsonify(message="Files processed and uploaded successfully"), 200
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred: str{e}")
         return jsonify(error=str(e)), 500
 
 
