@@ -57,6 +57,7 @@ def generate_video():
 
             # Process the files
             print("before calling video gen")
+            video_generation_in_progress=True
             generated_video_path = process_files(source_image_path, audio_path_file, ref_video_file)
             print("after video gen")
             #renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
