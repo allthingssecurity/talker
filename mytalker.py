@@ -61,7 +61,8 @@ def upload_file():
             return jsonify(message="Files processed and uploaded successfully"), 200
     except Exception as e:
         print(f"An error occurred: {e}")
-        return jsonify(error=str(e)), 500*        
+        return jsonify(error=str(e)), 500
+        
 def process_files(source_image_path, audio_path, ref_video_path=None):
     sad_talker = SadTalker(lazy_load=True)
 
