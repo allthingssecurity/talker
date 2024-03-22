@@ -54,6 +54,10 @@ def generate_video():
 
             source_image.save(source_image_path)
             audio_path.save(audio_path_file)
+            
+            
+            audio_path_filename_without_ext=os.path.splitext(audio_path_filename)[0]
+
 
             ref_video_file = None
             if ref_video_path and ref_video_path.filename != '':
@@ -65,8 +69,8 @@ def generate_video():
             print("cut audio ")
             cut_vocal_and_inst(audio_path_file)
             
-            vocal_path = f"output/{split_model}/vocals.wav"
-            inst = f"output/{split_model}/no_vocals.wav"
+            vocal_path = f"output/{split_model}/{audio_path_filename_without_ext}/vocals.wav"
+            inst = f"output/{split_model}/{audio_path_filename_without_ext}/no_vocals.wav"
             
             
             
@@ -148,8 +152,12 @@ def cut_vocal_and_inst(audio_path):
     #    yield "\n".join(logs), None, None
     
     print(result.stdout)
-    vocal = f"output/{split_model}/vocals.wav"
-    inst = f"output/{split_model}/no_vocals.wav"
+    
+    file_name=os.path.splitext(os.path.basename(audio_path))[0]
+
+
+    vocal = f"output/{split_model}/{file_name}/vocals.wav"
+    inst = f"output/{split_model}/{file_name}/no_vocals.wav"
     #logs.append("Audio splitting complete.")
 
 
