@@ -5,11 +5,17 @@ from src.gradio_demo import SadTalker
 from huggingface_hub import snapshot_download
 from upload import upload_to_do
 
+from multiprocessing import Process, SimpleQueue, set_start_method,get_context
+
+from pydub import AudioSegment
+
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['RESULT_FOLDER'] = 'results'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 video_generation_in_progress = False
+split_model="htdemucs"
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 if not os.path.exists(app.config['RESULT_FOLDER']):
@@ -56,12 +62,28 @@ def generate_video():
                 ref_video_path.save(ref_video_file)
 
             # Process the files
+            print("cut audio ")
+            cut_vocal_and_inst(audio_path_file)
+            
+            vocal_path = f"output/{split_model}/vocals.wav"
+            inst = f"output/{split_model}/no_vocals.wav"
+            
+            
+            
             print("before calling video gen")
             video_generation_in_progress=True
-            generated_video_path = process_files(source_image_path, audio_path_file, ref_video_file)
+            
+            
+            
+            generated_video_path = process_files(source_image_path, vocal_path, ref_video_file)
             print("after video gen")
+            
+            print("combine the video with instrument")
+            output_video_path=combine_video_and_audio(generated_video_path,inst,audio_path_filename)
+            #def combine_video_and_audio(video_path, audio_path, output_path):
+            print("combine the video with instrument finished")
             #renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
-            upload_to_do(generated_video_path)
+            upload_to_do(output_video_path)
             
             print("uploaded to Digital Ocean space")
             video_generation_in_progress = False
@@ -71,25 +93,6 @@ def generate_video():
         return jsonify(error=str(e)), 500
 
 
-def rename_video_to_audio_filename(generated_video_path, audio_path):
-    # Extract just the filenames
-    video_filename = os.path.basename(generated_video_path)
-    audio_filename = os.path.basename(audio_path)
-
-    # Get the file extension of the video file
-    video_extension = os.path.splitext(video_filename)[1]
-
-    # Construct the new video filename using the audio filename (but keep its original extension)
-    new_video_filename = os.path.splitext(audio_filename)[0] + video_extension
-
-    # Construct the full new path for the video if necessary
-    # Here we assume the video is in the same directory as the generated_video_path
-    new_video_path = os.path.join(os.path.dirname(generated_video_path), new_video_filename)
-
-    # Rename the video file
-    os.rename(generated_video_path, new_video_path)
-
-    return new_video_path
         
 def process_files(source_image_path, audio_path, ref_video_path=None):
     sad_talker = SadTalker(lazy_load=True)
@@ -117,6 +120,55 @@ def process_files(source_image_path, audio_path, ref_video_path=None):
     
     
     return generated_video_path
+
+
+def cut_vocal_and_inst(audio_path):
+    
+    
+    os.makedirs("output/result", exist_ok=True)
+    
+    print("before executing splitter")
+    command = f"demucs --two-stems=vocals -n {split_model} {audio_path} -o output"
+    env = os.environ.copy()
+
+# Add or modify the environment variable for this subprocess
+    env["CUDA_VISIBLE_DEVICES"] = "0"
+    
+   
+    
+    #result = subprocess.Popen(command.split(), stdout=subprocess.PIPE, text=True)
+    result = subprocess.run(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if result.returncode != 0:
+        print("Demucs process failed:", result.stderr)
+    else:
+        print("Demucs process completed successfully.")
+    print("after executing splitter")
+    #for line in result.stdout:
+    #    logs.append(line)
+    #    yield "\n".join(logs), None, None
+    
+    print(result.stdout)
+    vocal = f"output/{split_model}/vocals.wav"
+    inst = f"output/{split_model}/no_vocals.wav"
+    #logs.append("Audio splitting complete.")
+
+
+def combine_video_and_audio(video_path, audio_path, output_path):
+    os.makedirs("output/result", exist_ok=True)
+    output_path = f"output/result/{output_path}.mp4"
+    command = f'ffmpeg -y -i "{video_path}" -i "{audio_path}" -c:v copy -c:a aac -strict experimental "{output_path}"'
+    
+    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return output_path
+
+
+
+
+
+
+
+
+
 
 @app.route('/results/<filename>')
 def result(filename):
