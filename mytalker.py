@@ -4,7 +4,7 @@ import os
 from src.gradio_demo import SadTalker
 from huggingface_hub import snapshot_download
 from upload import upload_to_do
-
+import subprocess
 from multiprocessing import Process, SimpleQueue, set_start_method,get_context
 
 from pydub import AudioSegment
