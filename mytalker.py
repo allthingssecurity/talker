@@ -67,24 +67,24 @@ def generate_video():
 
             # Process the files
             print("cut audio ")
-            #cut_vocal_and_inst(audio_path_file)
+            cut_vocal_and_inst(audio_path_file)
             
-            #vocal_path = f"output/{split_model}/{audio_path_filename_without_ext}/vocals.wav"
-            #inst = f"output/{split_model}/{audio_path_filename_without_ext}/no_vocals.wav"
+            vocal_path = f"output/{split_model}/{audio_path_filename_without_ext}/vocals.wav"
+            inst = f"output/{split_model}/{audio_path_filename_without_ext}/no_vocals.wav"
             
-            #print(inst)
-            #print(vocal_path)
+            print(inst)
+            print(vocal_path)
             
             print("before calling video gen")
             video_generation_in_progress=True
             
             
             
-            generated_video_path = process_files(source_image_path, audio_path, ref_video_file)
+            generated_video_path = process_files(source_image_path, vocal_path, ref_video_file)
             print("after video gen")
             
             print("combine the video with instrument")
-            #output_video_path=combine_video_and_audio(generated_video_path,inst,audio_path_filename)
+            output_video_path=combine_video_and_audio(generated_video_path,inst,audio_path_filename)
             #def combine_video_and_audio(video_path, audio_path, output_path):
             print("combine the video with instrument finished")
             #renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
