@@ -84,12 +84,12 @@ def generate_video():
             print("after video gen")
             
             print("combine the video with instrument")
-            output_video_path=combine_video_and_audio(generated_video_path,audio_path_file,audio_path_filename)
+            output_video_path=combine_video_and_audio(generated_video_path,audio_path_file,audio_path_filename_without_ext)
             #def combine_video_and_audio(video_path, audio_path, output_path):
             print("combine the video with instrument finished")
             #renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
             upload_to_do(output_video_path)
-            upload_to_do(generated_video_path)
+            #upload_to_do(generated_video_path)
             print("uploaded to Digital Ocean space")
             video_generation_in_progress = False
             return jsonify(message="Files processed and uploaded successfully"), 200
