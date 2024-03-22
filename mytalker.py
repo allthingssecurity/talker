@@ -84,7 +84,7 @@ def generate_video():
             print("after video gen")
             
             print("combine the video with instrument")
-            output_video_path=combine_video_and_audio(generated_video_path,inst,audio_path_filename)
+            output_video_path=combine_video_and_audio(generated_video_path,audio_path_file,audio_path_filename)
             #def combine_video_and_audio(video_path, audio_path, output_path):
             print("combine the video with instrument finished")
             #renamed_video_path=rename_video_to_audio_filename(generated_video_path,audio_path)
@@ -99,7 +99,7 @@ def generate_video():
 
 def combine_video_and_audio(video_path, audio_path, output_path):
     # Load the video clip
-    video_clip = VideoFileClip(video_path)
+    video_clip = VideoFileClip(video_path).without_audio()
     
     # Load the audio clip
     audio_clip = AudioFileClip(audio_path)
