@@ -72,7 +72,8 @@ def generate_video():
             vocal_path = f"output/{split_model}/{audio_path_filename_without_ext}/vocals.wav"
             inst = f"output/{split_model}/{audio_path_filename_without_ext}/no_vocals.wav"
             
-            
+            print(inst)
+            print(vocal_path)
             
             print("before calling video gen")
             video_generation_in_progress=True
