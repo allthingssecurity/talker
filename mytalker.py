@@ -75,7 +75,7 @@ def generate_video():
             
             
             
-            generated_video_path = process_files(source_image_path, vocal_path, ref_video_file)
+            generated_video_path = process_files(source_image_path, audio_path, ref_video_file)
             print("after video gen")
             
             print("combine the video with instrument")
