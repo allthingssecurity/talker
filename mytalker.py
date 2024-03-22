@@ -6,7 +6,7 @@ from huggingface_hub import snapshot_download
 from upload import upload_to_do
 import subprocess
 from multiprocessing import Process, SimpleQueue, set_start_method,get_context
-
+from moviepy.editor import VideoFileClip, AudioFileClip
 from pydub import AudioSegment
 
 
@@ -97,7 +97,20 @@ def generate_video():
         print(f"An error occurred: str{e}")
         return jsonify(error=str(e)), 500
 
-
+def combine_video_and_audio(video_path, audio_path, output_path):
+    # Load the video clip
+    video_clip = VideoFileClip(video_path)
+    
+    # Load the audio clip
+    audio_clip = AudioFileClip(audio_path)
+    
+    # Set the audio of the video clip as the audio clip
+    final_clip = video_clip.set_audio(audio_clip)
+    
+    # Write the result to a file
+    final_clip.write_videofile(output_path, codec="libx264", audio_codec="aac")
+    output_path1 = f"output/result/{output_path}.mp4"
+    return output_path1
         
 def process_files(source_image_path, audio_path, ref_video_path=None):
     sad_talker = SadTalker(lazy_load=True)
@@ -162,13 +175,13 @@ def cut_vocal_and_inst(audio_path):
     #logs.append("Audio splitting complete.")
 
 
-def combine_video_and_audio(video_path, audio_path, output_path):
-    os.makedirs("output/result", exist_ok=True)
-    output_path = f"output/result/{output_path}.mp4"
-    command = f'ffmpeg -y -i "{video_path}" -i "{audio_path}" -c:v copy -c:a aac -strict experimental "{output_path}"'
+# def combine_video_and_audio(video_path, audio_path, output_path):
+    # os.makedirs("output/result", exist_ok=True)
+    # output_path = f"output/result/{output_path}.mp4"
+    # command = f'ffmpeg -y -i "{video_path}" -i "{audio_path}" -c:v copy -c:a aac -strict experimental "{output_path}"'
     
-    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return output_path
+    # result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # return output_path
 
 
 

@@ -27,5 +27,6 @@ boto3
 flask
 demucs
 ffmpeg
+moviepy
 soundfile>=0.12.1
 pydub
