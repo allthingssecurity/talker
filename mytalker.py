@@ -54,7 +54,7 @@ def generate_video():
 
             source_image.save(source_image_path)
             audio_path.save(audio_path_file)
-            
+            print(audio_path_file)
             
             audio_path_filename_without_ext=os.path.splitext(audio_path_filename)[0]
 
