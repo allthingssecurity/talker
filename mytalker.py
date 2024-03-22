@@ -107,9 +107,14 @@ def combine_video_and_audio(video_path, audio_path, output_path):
     # Set the audio of the video clip as the audio clip
     final_clip = video_clip.set_audio(audio_clip)
     
-    # Write the result to a file
-    final_clip.write_videofile(output_path, codec="libx264", audio_codec="aac")
-    output_path1 = f"output/result/{output_path}.mp4"
+    # Ensure the output file has the correct .mp4 extension
+    if not output_path.endswith('.mp4'):
+        output_path += '.mp4'
+
+    # Write the result to a file with the correct codecs
+    final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
+
+    output_path1 = f"output/result/{output_path}"
     return output_path1
         
 def process_files(source_image_path, audio_path, ref_video_path=None):
