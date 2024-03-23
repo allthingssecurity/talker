@@ -122,13 +122,13 @@ def process_files(source_image_path, audio_path, ref_video_path=None):
 
     params = {
         'preprocess': 'crop',
-        'still_mode': True,
+        'still_mode': False,
         'use_enhancer': False,
         'batch_size': 1,
         'size': 256,
         'pose_style': 0,
         'facerender': 'facevid2vid',
-        'exp_scale': 1.0,
+        'exp_scale': 2.0,
         'use_ref_video': ref_video_path is not None,
         'ref_info': 'pose',
         'use_idle_mode': False,
