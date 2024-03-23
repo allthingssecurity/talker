@@ -122,7 +122,7 @@ def process_files(source_image_path, audio_path, ref_video_path=None):
 
     params = {
         'preprocess': 'crop',
-        'still_mode': False,
+        'still_mode': True,
         'use_enhancer': False,
         'batch_size': 1,
         'size': 256,
