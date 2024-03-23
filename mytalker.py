@@ -59,11 +59,11 @@ def generate_video():
             audio_path_filename_without_ext=os.path.splitext(audio_path_filename)[0]
 
 
-            ref_video_file = None
-            if ref_video_path and ref_video_path.filename != '':
-                ref_video_filename = secure_filename(ref_video_path.filename)
-                ref_video_file = os.path.join(app.config['UPLOAD_FOLDER'], ref_video_filename)
-                ref_video_path.save(ref_video_file)
+            ref_video_file = 'examples/ref_video/1.mp4'
+            # if ref_video_path and ref_video_path.filename != '':
+                # ref_video_filename = secure_filename(ref_video_path.filename)
+                # ref_video_file = os.path.join(app.config['UPLOAD_FOLDER'], ref_video_filename)
+                # ref_video_path.save(ref_video_file)
 
             # Process the files
             print("cut audio ")
@@ -143,7 +143,7 @@ def process_files(source_image_path, audio_path, ref_video_path=None):
     
     
     return generated_video_path
-
+33
 
 def cut_vocal_and_inst(audio_path):
     
