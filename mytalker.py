@@ -132,7 +132,6 @@ def process_files(source_image_path, audio_path, ref_video_path=None):
         'use_ref_video': ref_video_path is not None,
         'ref_info': 'pose',
         'use_idle_mode': False,
-        'input_yaw' : '-20 30 10',
         'length_of_audio': 5,
         'result_dir': app.config['RESULT_FOLDER'],
     }
